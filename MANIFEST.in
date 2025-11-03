@@ -1,1 +1,4 @@
-
+include MANIFEST.in
+include setup.py
+include apps.txt
+recursive-include invoice_lock *.py *.json *.html *.css *.js
