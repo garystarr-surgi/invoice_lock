@@ -10,3 +10,5 @@ scheduler_events = {
         "invoice_lock.overdue.check_overdue_invoices_and_lock_customers"
     ]
 }
+
+fixtures = ["Custom Field"]
