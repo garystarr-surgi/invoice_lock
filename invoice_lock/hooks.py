@@ -19,4 +19,6 @@ fixtures = [
     }
 ]
 
-app_include_js = "public/js/customer_lock_check.js"
+# INCLUDE JS FILE FOR SALES ORDER AND QUOTATION
+app_include_js = "invoice_lock/public/js/customer_lock_check.js"
+
