@@ -6,10 +6,16 @@ frappe.ui.form.on(['Sales Order', 'Quotation'], {
   customer(frm) {
     // Trigger when customer field changes
     check_customer_lock(frm);
+  },
+  validate(frm) {
+    // Prevent saving if customer is locked
+    if (frm.doc.customer_locked) {
+      frappe.throw(__('Cannot save this document. Customer is locked due to overdue invoices.'));
+    }
   }
 });
 
-// Extra check for dynamic fields after render
+// Extra check for Quotation dynamic fields after rendering
 frappe.ui.form.on('Quotation', {
   onload_post_render(frm) {
     check_customer_lock(frm);
@@ -33,7 +39,7 @@ function check_customer_lock(frm) {
           indicator: "red"
         });
         frm.set_value('customer', '');
-        frm.doc.customer_locked = true;
+        frm.doc.customer_locked = true;  // Flag to prevent saving
       } else {
         frm.doc.customer_locked = false;
       }
