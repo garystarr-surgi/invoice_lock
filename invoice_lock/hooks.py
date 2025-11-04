@@ -19,11 +19,4 @@ fixtures = [
     }
 ]
 
-doc_events = {
-    "Quotation": {
-        "validate": "invoice_lock.hooks.quotation.validate"
-    },
-    "Sales Order": {
-        "validate": "invoice_lock.hooks.sales_order.validate"
-    }
-}
+app_include_js = "public/js/customer_lock_check.js"
