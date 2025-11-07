@@ -29,7 +29,10 @@ doc_events = {
     },
     "Quotation": {
         "validate": "invoice_lock.validation.validate_customer_not_locked"
-    }
+    },
+    "Customer": {
+        "validate": "invoice_lock.validation.enforce_customer_unlock_permissions"
+    },
 }
 
 
