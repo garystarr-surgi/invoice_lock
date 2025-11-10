@@ -1,2 +1,2 @@
 # Leave empty unless you add patch methods later
-invoice_lock.patches.set_customer_unlocker_role
+# invoice_lock.patches.set_customer_unlocker_role
