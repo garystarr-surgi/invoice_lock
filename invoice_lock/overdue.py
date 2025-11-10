@@ -70,14 +70,13 @@ def check_overdue_invoices_and_lock_customers():
     ensure_customer_lock_fields()
 
     today = getdate(now())
-    oldest_due_date = add_days(today, -SOFT_LOCK_THRESHOLD)
 
     overdue_invoices = frappe.get_list(
         "Sales Invoice",
         filters={
             "docstatus": 1,
             "outstanding_amount": (">", 0),
-            "due_date": ("<=", oldest_due_date),
+            "due_date": ("<", today),
         },
         fields=[
             "name",
@@ -151,7 +150,7 @@ def _format_status_html(lock_value, days_overdue):
     if lock_value == HARD_LOCK_VALUE:
         return f'<span class="text-danger">Hard Locked ({days_overdue}+ days past due)</span>'
     if lock_value == SOFT_LOCK_VALUE:
-        return f'<span class="text-warning">Soft Locked ({days_overdue} days past due)</span>'
+        return '<span class="text-warning">CUSTOMER IS SOFT LOCKED (40+ DAYS OVERDUE) SEE ACCOUNTING.</span>'
     return lock_value
 
 

@@ -18,7 +18,7 @@ def _build_status_html(days_overdue: Optional[int]) -> str:
     if days >= HARD_LOCK_THRESHOLD:
         return f'<span class="text-danger">Hard Locked ({days}+ days past due)</span>'
     if days >= SOFT_LOCK_THRESHOLD:
-        return f'<span class="text-warning">Soft Locked ({days} days past due)</span>'
+        return '<span class="text-warning">CUSTOMER IS SOFT LOCKED (40+ DAYS OVERDUE) SEE ACCOUNTING.</span>'
 
     return '<span class="text-muted">Locked</span>'
 
