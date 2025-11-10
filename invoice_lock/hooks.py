@@ -27,9 +27,9 @@ app_include_js = "/assets/invoice_lock/js/customer_lock_check.js"
 
 # Server-side validation and lock enforcement
 doc_events = {
-    "Sales Order": {
-        "validate": "invoice_lock.validation.validate_customer_not_locked"
-    },
+   # "Sales Order": {
+   #     "validate": "invoice_lock.validation.validate_customer_not_locked"
+   # },
     "Quotation": {
         "validate": "invoice_lock.validation.validate_customer_not_locked"
     },
