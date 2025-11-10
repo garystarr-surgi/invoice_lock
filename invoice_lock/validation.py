@@ -76,7 +76,7 @@ def enforce_customer_unlock_permissions(doc, method):
     if frappe.session.user == "Administrator":
         return
 
-    if not frappe.has_role("Customer Unlocker"):
+    if "Customer Unlocker" not in frappe.get_roles(frappe.session.user):
         frappe.throw(
             _("Only users with the Customer Unlocker role can unlock customers."),
             title=_("Insufficient Permission"),
