@@ -43,12 +43,25 @@ def ensure_customer_lock_fields():
             {
                 "fieldname": CUSTOM_LOCK_STATUS_FIELD,
                 "label": "Account Lock Status",
-                "fieldtype": "HTML",
+                "fieldtype": "Text Editor",
                 "read_only": 1,
                 "no_copy": 1,
                 "insert_after": CUSTOM_LOCKED_FIELD,
             },
         )
+    else:
+        # Ensure existing field uses Text Editor so stored HTML is rendered from value
+        custom_field_name = frappe.db.get_value(
+            "Custom Field",
+            {"dt": "Customer", "fieldname": CUSTOM_LOCK_STATUS_FIELD},
+            "name",
+        )
+        if custom_field_name:
+            cf_doc = frappe.get_doc("Custom Field", custom_field_name)
+            if cf_doc.fieldtype != "Text Editor" or cf_doc.options:
+                cf_doc.fieldtype = "Text Editor"
+                cf_doc.options = ""
+                cf_doc.save(ignore_permissions=True)
 
     if not frappe.db.has_column("Customer", CUSTOM_LOCK_DAYS_FIELD):
         create_custom_field(
