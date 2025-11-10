@@ -58,9 +58,14 @@ def ensure_customer_lock_fields():
         )
         if custom_field_name:
             cf_doc = frappe.get_doc("Custom Field", custom_field_name)
-            if cf_doc.fieldtype != "Text Editor" or cf_doc.options:
+        if (
+            cf_doc.fieldtype != "Text Editor"
+            or cf_doc.options
+            or cf_doc.depends_on != f"eval:doc.{CUSTOM_LOCKED_FIELD}"
+        ):
                 cf_doc.fieldtype = "Text Editor"
                 cf_doc.options = ""
+            cf_doc.depends_on = f"eval:doc.{CUSTOM_LOCKED_FIELD}"
                 cf_doc.save(ignore_permissions=True)
 
     if not frappe.db.has_column("Customer", CUSTOM_LOCK_DAYS_FIELD):
@@ -161,9 +166,18 @@ def _apply_lock(customer_name, lock_info, today):
 
 def _format_status_html(lock_value, days_overdue):
     if lock_value == HARD_LOCK_VALUE:
-        return f'<span class="text-danger">Hard Locked ({days_overdue}+ days past due)</span>'
+        return (
+            '<div style="background-color: #f8d7da; color: #721c24; padding: 10px; '
+            'border-radius: 5px; font-weight: bold; border: 1px solid #f5c6cb;">'
+            '<i class="fa fa-lock"></i> CUSTOMER IS HARD LOCKED (50+ DAYS OVERDUE)</div>'
+        )
     if lock_value == SOFT_LOCK_VALUE:
-        return '<span class="text-warning">CUSTOMER IS SOFT LOCKED (40+ DAYS OVERDUE) SEE ACCOUNTING.</span>'
+        return (
+            '<div style="background-color: #fff3cd; color: #856404; padding: 10px; '
+            'border-radius: 5px; font-weight: bold; border: 1px solid #ffeeba;">'
+            '<i class="fa fa-exclamation-triangle"></i> '
+            'CUSTOMER IS SOFT LOCKED (40+ DAYS OVERDUE) SEE ACCOUNTING.</div>'
+        )
     return lock_value
 
 
