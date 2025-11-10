@@ -13,14 +13,8 @@ scheduler_events = {
     ]
 }
 
-# Fixtures for deployment
-# fixtures = [
-   # "Custom Field",
-   # {
-    #    "doctype": "Role",
-     #   "filters": [["name", "in", ["Customer Unlocker"]]]
-   # }
-# ]
+# Fixtures for deployment (roles handled via core permissions)
+# fixtures = []
 
 # Include JS for client-side lock check
 app_include_js = "/assets/invoice_lock/js/customer_lock_check.js"

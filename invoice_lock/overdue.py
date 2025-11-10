@@ -188,7 +188,7 @@ def _notify_account_manager(customer_doc, invoice_doc, lock_status, days_overdue
         subject=subject,
         message=f"""
             {body}
-            <p>Lock enforced on {today}. Only users with the Customer Unlocker role can restore access.</p>
+            <p>Lock enforced on {today}. Only users with the Accounts Manager or System Manager role can restore access.</p>
         """,
     )
 

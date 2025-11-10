@@ -58,8 +58,11 @@ def check_customer_lock_status(customer):
     }
 
 
+ALLOWED_UNLOCK_ROLES = {"Accounts Manager", "System Manager"}
+
+
 def enforce_customer_unlock_permissions(doc, method):
-    """Allow only Customer Unlocker role to clear lock flags."""
+    """Allow only Accounts Manager or System Manager roles to clear lock flags."""
     if doc.is_new():
         return
 
@@ -73,13 +76,14 @@ def enforce_customer_unlock_permissions(doc, method):
     if not unlocking:
         return
 
-    if "Administrator" in frappe.get_roles(frappe.session.user):
+    user_roles = set(frappe.get_roles(frappe.session.user))
+
+    if "Administrator" in user_roles:
         return
-
-
-    if "Customer Unlocker" not in frappe.get_roles(frappe.session.user):
+    
+    if not (ALLOWED_UNLOCK_ROLES & user_roles):
         frappe.throw(
-            _("Only users with the Customer Unlocker role can unlock customers."),
+            _("Only users with the Accounts Manager or System Manager role can unlock customers."),
             title=_("Insufficient Permission"),
         )
 
