@@ -73,8 +73,9 @@ def enforce_customer_unlock_permissions(doc, method):
     if not unlocking:
         return
 
-    if frappe.session.user == "Administrator":
-        return
+   if "Administrator" in frappe.get_roles(frappe.session.user):
+    return
+
 
     if "Customer Unlocker" not in frappe.get_roles(frappe.session.user):
         frappe.throw(
