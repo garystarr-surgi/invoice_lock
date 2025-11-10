@@ -17,19 +17,15 @@ def validate_customer_not_locked(doc, method):
 
     ensure_customer_lock_fields()
 
-    lock_data = frappe.db.get_value(
-        "Customer",
-        doc.customer,
-        [CUSTOM_LOCKED_FIELD, CUSTOM_LOCK_STATUS_FIELD, CUSTOM_LOCK_DAYS_FIELD],
-        as_dict=True,
-    )
+    # Use get_doc to safely access HTML field
+    customer_doc = frappe.get_doc("Customer", doc.customer)
 
-    if not lock_data or not lock_data.get(CUSTOM_LOCKED_FIELD):
+    if not customer_doc.get(CUSTOM_LOCKED_FIELD):
         return
 
-    status_html = lock_data.get(CUSTOM_LOCK_STATUS_FIELD)
+    status_html = customer_doc.get(CUSTOM_LOCK_STATUS_FIELD)
     status = strip_html(status_html) if status_html else _("Locked")
-    days_overdue = lock_data.get(CUSTOM_LOCK_DAYS_FIELD) or 0
+    days_overdue = customer_doc.get(CUSTOM_LOCK_DAYS_FIELD) or 0
 
     frappe.throw(
         _(
@@ -52,21 +48,13 @@ def check_customer_lock_status(customer):
 
     ensure_customer_lock_fields()
 
-    lock_data = frappe.db.get_value(
-        "Customer",
-        customer,
-        [CUSTOM_LOCKED_FIELD, CUSTOM_LOCK_STATUS_FIELD, CUSTOM_LOCK_DAYS_FIELD],
-        as_dict=True,
-    )
-
-    if not lock_data:
-        return {"locked": False}
+    customer_doc = frappe.get_doc("Customer", customer)
 
     return {
-        "locked": bool(lock_data.get(CUSTOM_LOCKED_FIELD)),
-        "status": lock_data.get(CUSTOM_LOCK_STATUS_FIELD),
-        "status_label": strip_html(lock_data.get(CUSTOM_LOCK_STATUS_FIELD) or "") or None,
-        "days_overdue": lock_data.get(CUSTOM_LOCK_DAYS_FIELD),
+        "locked": bool(customer_doc.get(CUSTOM_LOCKED_FIELD)),
+        "status": customer_doc.get(CUSTOM_LOCK_STATUS_FIELD),
+        "status_label": strip_html(customer_doc.get(CUSTOM_LOCK_STATUS_FIELD) or "") or None,
+        "days_overdue": customer_doc.get(CUSTOM_LOCK_DAYS_FIELD),
     }
 
 
@@ -77,15 +65,9 @@ def enforce_customer_unlock_permissions(doc, method):
 
     ensure_customer_lock_fields()
 
-    lock_data = frappe.db.get_value(
-        "Customer",
-        doc.name,
-        [CUSTOM_LOCKED_FIELD, CUSTOM_LOCK_STATUS_FIELD, CUSTOM_LOCK_DAYS_FIELD],
-        as_dict=True,
-    ) or {}
+    customer_doc = frappe.get_doc("Customer", doc.name)
 
-    previous_locked = bool(lock_data.get(CUSTOM_LOCKED_FIELD))
-
+    previous_locked = bool(customer_doc.get(CUSTOM_LOCKED_FIELD))
     unlocking = bool(previous_locked) and not bool(doc.get(CUSTOM_LOCKED_FIELD))
 
     if not unlocking:
@@ -103,4 +85,3 @@ def enforce_customer_unlock_permissions(doc, method):
     # Clear lock metadata when unlocking
     doc.set(CUSTOM_LOCK_STATUS_FIELD, None)
     doc.set(CUSTOM_LOCK_DAYS_FIELD, None)
-
