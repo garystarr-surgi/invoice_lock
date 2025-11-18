@@ -5,10 +5,13 @@ app_description = "Locks customers with overdue invoices"
 app_email = "gary.starr@surgishop.com"
 app_license = "MIT"
 
-# Daily scheduled tasks
+# Scheduled tasks
 scheduler_events = {
     "daily": [
         "invoice_lock.overdue.check_overdue_invoices_and_lock_customers"
+    ],
+    "weekly": [
+        "invoice_lock.tasks.send_weekly_locked_customers_summary"
     ]
 }
 
